@@ -1,0 +1,9 @@
+[Unit]
+Description=Empower YNAB Import Timer
+
+[Timer]
+OnCalendar=*-*-* 6:00:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target
