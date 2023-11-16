@@ -72,6 +72,8 @@ export async function fetchAccounts(): Promise<Account[]> {
     console.log("Filling login credentials...");
     await page.type('#form-email input[name="username"]', username);
 
+    await sleep(5000);
+
     console.log("Submitting...");
     await page.click('#form-email button[name="continue"]');
 
@@ -81,37 +83,43 @@ export async function fetchAccounts(): Promise<Account[]> {
     await page.waitForSelector(emailOptionBtnSelector);
 
     const mailbox = new EmailScanner();
-    await mailbox.connect();
+    try {
+      await mailbox.connect();
 
-    console.log('Clicking the "Email" OTP button...');
-    await sleep(5000);
-    await page.click(emailOptionBtnSelector);
+      console.log('Clicking the "Email" OTP button...');
+      await sleep(5000);
+      await page.click(emailOptionBtnSelector);
 
-    const waitForEmail = mailbox.waitForEmail(
-      (email: Email) => email.subject === "Register A New Computer"
-    );
+      const waitForEmail = mailbox.waitForEmail(
+        (email: Email) => email.subject === "Register A New Computer"
+      );
 
-    const email = await Promise.race([timeout(60000, false), waitForEmail]);
-    if (!email) throw new Error("OTP email was not received within 60 seconds");
-    mailbox.disconnect();
+      const email = await Promise.race([timeout(60000, false), waitForEmail]);
+      if (!email)
+        throw new Error("OTP email was not received within 60 seconds");
 
-    let code: string | undefined;
-    const $ = load(email.body);
-    const text = $("body").text();
-    const textSplit = text.split("4-Digit Authorization Code: ", 2);
-    if (textSplit.length == 2) {
-      const codeString = textSplit[1];
-      const codeMatches = codeString.match(/[0-9]+/g) || [];
-      const potentialCode = codeMatches[0];
-      if (potentialCode && potentialCode.length === 4) code = potentialCode;
+      let code: string | undefined;
+      const $ = load(email.body);
+      const text = $("body").text();
+      const textSplit = text.split("4-Digit Authorization Code: ", 2);
+      if (textSplit.length == 2) {
+        const codeString = textSplit[1];
+        const codeMatches = codeString.match(/[0-9]+/g) || [];
+        const potentialCode = codeMatches[0];
+        if (potentialCode && potentialCode.length === 4) code = potentialCode;
+      }
+
+      if (!code) throw new Error("OTP code could not be extracted from email");
+
+      await page.type('input[name="code"]', code);
+
+      console.log("Submitting code...");
+      await page.click('#form-challengeResponse-email button[type="submit"]');
+    } catch (e) {
+      console.error(e);
+      console.error("Failed to perform OTP process, maybe it wasn't needed?");
+      mailbox.disconnect();
     }
-
-    if (!code) throw new Error("OTP code could not be extracted from email");
-
-    await page.type('input[name="code"]', code);
-
-    console.log("Submitting code...");
-    await page.click('#form-challengeResponse-email button[type="submit"]');
 
     await sleep(2000);
 

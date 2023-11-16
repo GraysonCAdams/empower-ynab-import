@@ -16,3 +16,13 @@ ExecStart=/usr/bin/docker run \
 
 [Install]
 WantedBy=default.target
+
+[Unit]
+Description=Empower YNAB Import Timer
+
+[Timer]
+OnCalendar=*-*-* 6:00:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target
