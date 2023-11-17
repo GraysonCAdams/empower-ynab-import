@@ -15,7 +15,7 @@ if (!budgetId) throw new Error("You must provide the YNAB budget ID");
 
 const ynabAPI = new ynab.API(apiToken);
 
-export const ynabAmount = (amount: string) => -parseFloat(amount) * 1000;
+export const ynabAmount = (amount: string) => Math.round(-parseFloat(amount) * 1000);
 export const ynabDateFormat = (date: Date) => dateFormat(date, "yyyy-mm-dd");
 
 export const fetchAccounts = async (): Promise<Account[]> => {
