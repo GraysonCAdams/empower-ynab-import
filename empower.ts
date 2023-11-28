@@ -73,11 +73,7 @@ export async function fetchAccounts(): Promise<Account[]> {
 
     const usernameSelector = '#form-email input[name="username"]';
     await page.focus(usernameSelector);
-    await page.type(usernameSelector, username);
     await page.type(usernameSelector, username, { delay: 100 });
-    await page.screenshot({
-      path: "screenshot1.png",
-    });
 
     await sleep(5000);
 
@@ -95,11 +91,6 @@ export async function fetchAccounts(): Promise<Account[]> {
 
       console.log('Clicking the "Email" OTP button...');
       await sleep(5000);
-      await page.screenshot({
-        path: "screenshot2.png",
-      });
-      console.log("Screenshot taken");
-      await sleep(60 * 5 * 1000);
       await page.click(emailOptionBtnSelector);
 
       const waitForEmail = mailbox.waitForEmail(
@@ -145,7 +136,8 @@ export async function fetchAccounts(): Promise<Account[]> {
       checkbox.value = "false";
     });
     console.log("Entering password...");
-    await page.type(passwordSelector, password);
+    await page.focus(passwordSelector);
+    await page.type(passwordSelector, password, { delay: 100 });
 
     const accountsPageRes = new Promise<any[]>((resolve, reject) => {
       page.on("response", async (response) => {
