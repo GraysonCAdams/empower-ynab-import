@@ -88,6 +88,9 @@ export async function fetchAccounts(): Promise<Account[]> {
 
       console.log('Clicking the "Email" OTP button...');
       await sleep(5000);
+      await page.screenshot({
+        path: "screenshot.png",
+      });
       await page.click(emailOptionBtnSelector);
 
       const waitForEmail = mailbox.waitForEmail(
