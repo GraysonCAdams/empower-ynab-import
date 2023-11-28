@@ -75,7 +75,6 @@ export async function fetchAccounts(): Promise<Account[]> {
     await sleep(5000);
     await page.focus(usernameSelector);
     await page.type(usernameSelector, username, { delay: 100 });
-    await page.screenshot({ path: "screenshot1.png" });
     await sleep(2500);
 
     console.log("Submitting...");
@@ -92,8 +91,6 @@ export async function fetchAccounts(): Promise<Account[]> {
 
       console.log('Clicking the "Email" OTP button...');
       await sleep(5000);
-      await page.screenshot({ path: "screenshot2.png" });
-      await sleep(60 * 5 * 1000);
 
       await page.click(emailOptionBtnSelector);
 
