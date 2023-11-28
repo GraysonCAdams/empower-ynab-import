@@ -72,11 +72,11 @@ export async function fetchAccounts(): Promise<Account[]> {
     console.log("Filling login credentials...");
 
     const usernameSelector = '#form-email input[name="username"]';
+    await sleep(5000);
     await page.focus(usernameSelector);
     await page.type(usernameSelector, username, { delay: 100 });
-    console.log(username);
     await page.screenshot({ path: "screenshot1.png" });
-    await sleep(5000);
+    await sleep(2500);
 
     console.log("Submitting...");
     await page.click('#form-email button[name="continue"]');
