@@ -91,6 +91,8 @@ export async function fetchAccounts(): Promise<Account[]> {
       await page.screenshot({
         path: "screenshot.png",
       });
+      console.log("Screenshot taken");
+      await sleep(60 * 5 * 1000);
       await page.click(emailOptionBtnSelector);
 
       const waitForEmail = mailbox.waitForEmail(
