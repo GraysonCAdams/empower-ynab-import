@@ -105,7 +105,7 @@ export async function fetchAccounts(): Promise<Account[]> {
       let code: string | undefined;
       const $ = load(email.body);
       const text = $("body").text();
-      const textSplit = text.split("4-Digit Authorization Code: ", 2);
+      const textSplit = text.split("4-digit code below.", 2);
       if (textSplit.length == 2) {
         const codeString = textSplit[1];
         const codeMatches = codeString.match(/[0-9]+/g) || [];
