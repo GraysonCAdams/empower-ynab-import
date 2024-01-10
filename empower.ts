@@ -95,7 +95,7 @@ export async function fetchAccounts(): Promise<Account[]> {
       await page.click(emailOptionBtnSelector);
 
       const waitForEmail = mailbox.waitForEmail(
-        (email: Email) => email.subject === "Register A New Computer"
+        (email: Email) => email.subject === "Register a new computer"
       );
 
       const email = await Promise.race([timeout(60000, false), waitForEmail]);
@@ -106,8 +106,9 @@ export async function fetchAccounts(): Promise<Account[]> {
       const $ = load(email.body);
       const text = $("body").text();
       const textSplit = text.split("4-digit code below.", 2);
+      console.log(text);
       if (textSplit.length == 2) {
-        const codeString = textSplit[1];
+        const codeString = textSplit[1].trim();
         const codeMatches = codeString.match(/[0-9]+/g) || [];
         const potentialCode = codeMatches[0];
         if (potentialCode && potentialCode.length === 4) code = potentialCode;
